@@ -1,8 +1,12 @@
-const {check, validateresult} = require('express-validator');
+const {body} = require('express-validator');
+const Mahasiswa = require('./connect.js')
 
-exports.insertBarangValidate = [
-    check('nim', 'NIM belum di insert').trim().escape()
-    .matches('[0-9]').withMessage('NIM harus angka')
-    .isLength({min:9}).withMessage('NIM harus terdiri dari 9 nomor'),
-    check('')
+exports.insertMahasiswaValidate = [
+    body('nim').isLength({min:9}).withMessage('NIM harus terdiri dari 9 angka')
+    .isInt().withMessage('NIM harus angka').bail().trim().escape()
+    .custom(value => {
+        return Mahasiswa.findOne(value,(req,res)=>{
+            
+        })
+    })
 ]
