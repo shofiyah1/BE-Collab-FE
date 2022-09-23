@@ -5,8 +5,10 @@ exports.insertMahasiswaValidate = [
     body('nim').isLength({min:9}).withMessage('NIM harus terdiri dari 9 angka')
     .isInt().withMessage('NIM harus angka').bail().trim().escape()
     .custom(value => {
-        return Mahasiswa.findOne(value,(req,res)=>{
-            
+        return Mahasiswa.findOne({value},(req,res)=>{
+            if(!value){
+                res.status(200).json({message: 'NIM is already in use'})
+            }
         })
     })
 ]

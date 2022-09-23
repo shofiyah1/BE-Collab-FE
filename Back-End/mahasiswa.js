@@ -12,13 +12,32 @@ exports.getInsert = async (req,res) => {
 }
 
 exports.getMahasiswa = async (req,res)=>{
-    Mahasiswa.find()
+    if(req.query.id){
+        const id = req.query.id
+
+        Mahasiswa.findById(id)
+        .then(data => {
+            if(!data){
+                res.status(404).send({
+                    message:`Not found Mahasiswa with id ${id}`
+                })
+            } else {
+                res.send(data)
+            }
+        }).catch(err => {
+            res.status(500).send({
+                message:`Error retrieving Mahasiswa with id ${id}`
+            })
+        })
+    } else {
+        Mahasiswa.find()
         .then(mahasiswa => {
             res.send(mahasiswa)
         })
         .catch(err => {
             res.status(500).send({message : err.message || "Error while retriving mahasiswa information"})
         })
+    }    
 }
 
 exports.Insert = async (req,res) => {
@@ -44,15 +63,22 @@ exports.Insert = async (req,res) => {
 }
 
 exports.deleteMahasiswa = async (req,res) => {
-    Mahasiswa.remove({nim: req.body.nim}).then(res => {
-        if(res){
-            console.log('User Delete')
-        } else {
-            console.log('eweuh ngab')
-        }
-    }).catch(res =>{
-        console.log('Error')
-    });
+    const id = req.params.id
+
+    Mahasiswa.findByIdAndDelete(id)
+        .then(data => {
+            if(!data){
+                res.status(404).send({message: `Cannot delete with id ${id}`})
+            } else {
+                res.send({
+                    message: 'Mahasiswa was deleted successfully'
+                })
+            }  
+        }).catch(err => {
+            res.status(500).send({
+                message:"Could not delete mahasiswa with id = "+id
+            })
+        })
 }
 
 exports.updateMahasiswa = (req,res) => {
@@ -63,7 +89,7 @@ exports.updateMahasiswa = (req,res) => {
     }
 
     const id = req.params.id
-    Mahasiswa.findByIdAndUpdate(id, req.body,{useFindAndModify:false})
+    Mahasiswa.findByIdAndUpdate(id, req.body)
         .then(data => {
             if(!data){
                 res.status(404).send({message:`Cannot Update user with ${id}. Maybe user not found`})
@@ -74,12 +100,4 @@ exports.updateMahasiswa = (req,res) => {
         .catch(err => {
             res.status(500).send({message: "error update user information"})
         })
-}
-
-exports.showMahasiswa= async (req,res) => {
-    Mahasiswa.find().then(res => {
-        console.log('Show')
-    }).catch(err => {
-        console.log(err)
-    })
 }

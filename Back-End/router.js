@@ -8,15 +8,28 @@ port = 3000
 
 app.use(mahasiswaController.bodyParser.urlencoded({ extended: false }));
 
-// GET HTML
+// GET HTML PAGE
+// Index.html
 app.get('/', mahasiswaController.getIndex)
-app.get('/get-insert', mahasiswaController.getInsert)
-app.get('/find', mahasiswaController.getMahasiswa)
 
-// POST TO DATABASE CRUD
-app.post('/api/insert', validate.insertMahasiswaValidate, mahasiswaController.Insert)
-app.post('/api/delete/:id', mahasiswaController.deleteMahasiswa)
-app.put('/api/update/:id', mahasiswaController.updateMahasiswa)
-app.get('/api/show', mahasiswaController.showMahasiswa)
+// Insert.html
+app.get('/insert', mahasiswaController.getInsert)
+
+// *************************************************************************************
+// ******************************POST TO DATABASE CRUD API******************************
+
+// This function is called insert (Create Mahasiswa)
+app.post('/api/mahasiswa', validate.insertMahasiswaValidate, mahasiswaController.Insert)
+
+// This function is called update (Update Mahasiswa)
+app.put('/api/mahasiswa/:id', mahasiswaController.updateMahasiswa)
+
+// This function is called delete (Delete Mahasiswa)
+app.delete('/api/mahasiswa/:id', mahasiswaController.deleteMahasiswa)
+
+// This function is called data from database (Read Mahasiswa)
+app.get('/api/mahasiswa', mahasiswaController.getMahasiswa)
+
+// *************************************************************************************
 
 app.listen(port, () => console.log(`This app is listening on port ${port}`));
